@@ -38,6 +38,11 @@ public:
     static int getIdCounter() {
         return nextId;
     }
+
+    static int resetIdCounter() {
+		nextId = 0;
+		return nextId;
+    }
 };
 
 int Lyric::nextId = 0;

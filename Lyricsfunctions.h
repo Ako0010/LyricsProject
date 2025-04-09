@@ -55,3 +55,9 @@ bool isValidYear(const string& yearStr) {
     int year = stoi(yearStr);
     return year >= 1950 && year <= 2025;
 }
+
+void addLyricFromFile(Lyric lyrics[], int& lyricCount, const char* fileName);
+
+bool isValidChoice(const string& choice) {
+    return choice == "1" || choice == "2";
+}

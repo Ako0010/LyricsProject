@@ -243,3 +243,22 @@ void editLyric(Lyric lyrics[], int lyricCount, const string& name) {
     cout << "\033[31mLyric not found!\033[0m" << endl;
     _getch();
 }
+
+void displayLyrics(Lyric lyrics[], int lyricCount) {
+    if (lyricCount == 0) {
+        cout << "\033[31mNo lyrics available.\033[0m" << endl;
+        _getch();
+        return;
+    }
+
+    cout << "Displaying all lyrics:" << endl;
+    for (int i = 0; i < lyricCount; ++i) {
+        lyrics[i].display();
+    }
+
+    cout << "Press Enter to return to the menu..." << endl;
+    int ch = _getch();
+    if (ch == 13) {
+        return;
+    }
+}

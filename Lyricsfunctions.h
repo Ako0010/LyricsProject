@@ -1,5 +1,6 @@
 #pragma once
 #pragma warning(disable : 6031)
+#pragma warning(disable : 4996)
 const int MAX_LYRICS = 100;
 
 void displayMenu(int highlight) {
@@ -435,6 +436,6 @@ void saveLyricsToFiles(Lyric lyrics[], int lyricCount) {
 
         fclose(file);
         cout << "\033[32mLyric " << lyrics[i].getName() << " saved to file: " << fileName << "\033[0m" << endl;
-        getch();
+        _getch();
     }
 }

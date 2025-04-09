@@ -7,3 +7,13 @@ bool isValidNameOrAuthor(const string& input) {
         }
     }
 }
+
+bool isValidNumeric(const string& yearStr) {
+    for (size_t i = 0; i < yearStr.length(); i++)
+    {
+        if (!isdigit(yearStr[i])) {
+			return false;
+        }
+    }
+	return true;
+}

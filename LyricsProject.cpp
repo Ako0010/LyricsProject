@@ -72,9 +72,6 @@ int main()
             case 6:
             {
                 char fileName[256];
-                cout << "Enter file name to save lyrics: ";
-                cin.ignore();
-                cin.getline(fileName, 256);
                 saveLyricsToFiles(lyrics, lyricCount);
             }
             break;

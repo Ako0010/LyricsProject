@@ -407,6 +407,14 @@ void saveLyricsToFiles(Lyric lyrics[], int lyricCount) {
 
         fileName[idx] = '\0';
 
+        cout << "\033[33mDo you want to save the lyrics of '" << lyrics[i].getName() << "' to a file? (y/n): \033[0m";
+        char saveChoice;
+        cin >> saveChoice;
+        if (saveChoice != 'y' && saveChoice != 'Y') {
+            cout << "Skipping save for: " << lyrics[i].getName() << endl;
+            continue;
+        }
+
         FILE* file = fopen(fileName, "w");
         if (!file) {
             cout << "\033[31mError opening file: " << fileName << "!\033[0m" << endl;

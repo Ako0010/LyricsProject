@@ -1,4 +1,5 @@
 #pragma once
+const int MAX_LYRICS = 100;
 
 bool isValidNameOrAuthor(const string& input) {
     for (size_t i = 0; i < input.length(); ++i) {

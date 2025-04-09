@@ -2,6 +2,8 @@
 
 class Lyric {
 private:
+    int id;
+	static int nextId;
     string name;
     string author;
     int year;
@@ -10,12 +12,14 @@ private:
 public:
     Lyric(string namee = "", string authorr = "", int yearr = 0, string lyricss = "")
         : name(namee), author(authorr), year(yearr), lyrics(lyricss) {
+		id = nextId++;
     }
 
     string getName() const { return name; }
     string getAuthor() const { return author; }
     int getYear() const { return year; }
     string getLyrics() const { return lyrics; }
+    int getId() const { return id; }
 
     void setName(string namee) { name = namee; }
     void setAuthor(string authorr) { author = authorr; }
@@ -23,10 +27,17 @@ public:
     void setLyrics(string lyricss) { lyrics = lyricss; }
 
     void display() const {
+        cout << "ID: " << id << endl;
         cout << "Song Name: " << name << endl;
         cout << "Author: " << author << endl;
         cout << "Year: " << year << endl;
         cout << "Lyrics: " << endl;
         cout << lyrics << endl << endl;
     }
+
+    static int getIdCounter() {
+        return nextId;
+    }
 };
+
+int Lyric::nextId = 0;

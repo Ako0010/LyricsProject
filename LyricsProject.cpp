@@ -13,8 +13,6 @@ int main()
     int highlight = 0;
     bool running = true;
 
-    lyrics[lyricCount++] = Lyric("Impossible", "James Arthur", 2013, "I remember,years ago Someone told me I should take caution when it comes to love, I did and you were strong and I was not my illiuson my mistake I was careless");
-
 
     while (running) {
         system("cls||clear");

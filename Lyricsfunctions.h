@@ -1,6 +1,34 @@
 #pragma once
 const int MAX_LYRICS = 100;
 
+void displayMenu(int highlight) {
+    system("cls||clear");
+
+    cout << endl;
+
+    string options[] = {
+        "1. Add lyric",
+        "2. Delete lyric",
+        "3. Edit lyric",
+        "4. Display all lyrics",
+        "5. Search lyrics by author",
+        "6. Search lyrics by keyword",
+        "7. Save lyrics to file",
+        "8. Exit"
+    };
+
+    for (int i = 0; i < 8; ++i) {
+        if (i == highlight) {
+            cout << options[i] << " <-" << endl;
+        }
+        else {
+            cout << options[i] << endl;
+        }
+    }
+}
+
+
+
 bool isValidNameOrAuthor(const string& input) {
     for (size_t i = 0; i < input.length(); ++i) {
         if ((input[i] < 65 || (input[i] > 90 && input[i] < 97) || input[i] > 122) && input[i] != ' ') {

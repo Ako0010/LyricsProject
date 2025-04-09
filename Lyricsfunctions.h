@@ -306,3 +306,85 @@ bool containsSubstring(const string& str, const string& searchQuery) {
     }
     return false;
 }
+
+void searchByAuthor(Lyric lyrics[], int lyricCount, string& searchQuery) {
+    while (true) {
+        system("cls||clear");
+        cout << "\033[33mIf you want to exit, press the Esc key.\033[0m" << std::endl;
+        cout << endl;
+
+
+        bool foundAuthor = false;
+        for (int i = 0; i < lyricCount; ++i) {
+            if (containsSubstring(lyrics[i].getAuthor(), searchQuery)) {
+                lyrics[i].display();
+                foundAuthor = true;
+            }
+        }
+
+        if (!foundAuthor) {
+            cout << "\033[31mNo lyrics found for this author.\033[0m" << endl;
+
+        }
+
+        cout << "Search author: ";
+        for (size_t i = 0; i < searchQuery.length(); ++i) {
+            cout << searchQuery[i];
+        }
+
+        char ch = _getch();
+
+        if (ch == 27) {
+            break;
+        }
+        else if (ch == 8 && searchQuery.length() > 0) {
+            searchQuery.pop_back();
+        }
+        else if (isValidChar(ch) && ch != ' ') {
+            searchQuery += ch;
+        }
+        else if (ch == ' ') {
+            searchQuery += ' ';
+        }
+    }
+}
+
+void searchByKeyword(Lyric lyrics[], int lyricCount, string& searchQuery) {
+    while (true) {
+        system("cls||clear");
+        cout << "\033[33mIf you want to exit, press the Esc key.\033[0m" << std::endl;
+        cout << endl;
+
+        bool foundKeyword = false;
+        for (int i = 0; i < lyricCount; ++i) {
+            if (containsSubstring(lyrics[i].getLyrics(), searchQuery)) {
+                lyrics[i].display();
+                foundKeyword = true;
+            }
+        }
+
+        if (!foundKeyword) {
+            cout << "\033[31mNo lyrics found with this keyword.\033[0m" << endl;
+        }
+
+        cout << "Search keyword: ";
+        for (size_t i = 0; i < searchQuery.length(); ++i) {
+            cout << searchQuery[i];
+        }
+
+        char ch = _getch();
+
+        if (ch == 27) {
+            break;
+        }
+        else if (ch == 8 && searchQuery.length() > 0) {
+            searchQuery.pop_back();
+        }
+        else if (isValidChar(ch) && ch != ' ') {
+            searchQuery += ch;
+        }
+        else if (ch == ' ') {
+            searchQuery += ' ';
+        }
+    }
+}

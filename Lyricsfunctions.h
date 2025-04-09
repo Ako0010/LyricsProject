@@ -17,3 +17,12 @@ bool isValidNumeric(const string& yearStr) {
     }
 	return true;
 }
+
+bool isValidYear(const string& yearStr) {
+    if (yearStr.length() != 4 || !isValidNumeric(yearStr)) {
+        return false;
+    }
+
+    int year = stoi(yearStr);
+    return year >= 1950 && year <= 2025;
+}

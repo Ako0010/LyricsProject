@@ -8,7 +8,7 @@ using namespace std;
 
 int main()
 {
-Lyric lyrics[MAX_LYRICS];
+    Lyric lyrics[MAX_LYRICS];
     int lyricCount = 0;
     int highlight = 0;
     bool running = true;

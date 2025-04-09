@@ -15,6 +15,7 @@ int main()
 
     Lyric::resetIdCounter();
     lyrics[lyricCount++] = Lyric("Impossible", "James Arthur", 2013, "I remember,years ago Someone told me I should take caution when it comes to love, I did and you were strong and I was not my illiuson my mistake I was careless");
+    lyrics[lyricCount++] = Lyric("Ego", "Willy William", 2016, "Miroir, dis-moi qui est le plus beau Quitte à devenir mégalo  Viens donc chatouiller mon ego Allez, allez, allez! Laisse - moi entrer dans ta matrice Goûter à tes délicesPersonne ne peut m  en dissuader Allez, allez, allez!");
 
 
     while (running) {

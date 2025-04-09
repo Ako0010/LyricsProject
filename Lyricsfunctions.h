@@ -70,7 +70,7 @@ bool isValidYear(const string& yearStr) {
 void addLyricFromFile(Lyric lyrics[], int& lyricCount, const char* fileName);
 
 bool isValidChoice(const string& choice) {
-    return choice == "1" || choice == "2";
+    return choice == "1" || choice == "2" || choice == "3";
 }
 
 void addLyric(Lyric lyrics[], int& lyricCount) 
@@ -85,7 +85,8 @@ void addLyric(Lyric lyrics[], int& lyricCount)
         cout << "Choose how to add lyrics:" << endl;
         cout << "1. Manually enter lyrics" << endl;
         cout << "2. Upload lyrics from a file" << endl;
-        cout << "Enter your choice (1 or 2): ";
+        cout << "3. Exit" << endl;
+        cout << "Enter your choice 1, 2, or 3 : ";
 
         getline(cin, choice);
 
@@ -142,6 +143,9 @@ void addLyric(Lyric lyrics[], int& lyricCount)
         }
         addLyricFromFile(lyrics, lyricCount, fileName);
     }
+	else if (choice == "3") {
+		return;
+	}
     else {
         cout << "\033[31mInvalid choice! Returning to the menu.\033[0m" << endl;
         _getch();

@@ -8,10 +8,12 @@ using namespace std;
 
 int main()
 {
-    Lyric lyrics[MAX_LYRICS];
+Lyric lyrics[MAX_LYRICS];
     int lyricCount = 0;
     int highlight = 0;
     bool running = true;
+
+    lyrics[lyricCount++] = Lyric("Impossible", "James Arthur", 2013, "I remember,years ago Someone told me I should take caution when it comes to love, I did and you were strong and I was not my illiuson my mistake I was careless");
 
 
     while (running) {
@@ -55,7 +57,7 @@ int main()
             {
                 string searchQuery;
                 cout << "Enter author to search for: ";
-                searchByAuthor(lyrics, lyricCount, searchQuery);
+                searchByAuthor(lyrics, lyricCount,searchQuery);
             }
             break;
             case 5:

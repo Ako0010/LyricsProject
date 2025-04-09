@@ -71,7 +71,7 @@ int main()
             break;
             case 6:
             {
-                char fileName[256];
+                char fileName[256];      
                 saveLyricsToFiles(lyrics, lyricCount);
             }
             break;

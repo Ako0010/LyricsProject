@@ -6,6 +6,15 @@ const int MAX_LYRICS = 100;
 void displayMenu(int highlight) {
     system("cls||clear");
 
+    cout << "\033[32m           _  __  ____            _      __     __ _____   _____   _____   _____" << endl;
+    cout << "    /\\    | |/ / / __ \\          | |     \\ \\   / /|  __ \\ |_   _| / ____| / ____|" << endl;
+    cout << "   /  \\   | ' / | |  | |         | |      \\ \\_/ / | |__) |  | |  | |     | (___" << endl;
+    cout << "  / /\\ \\  |  <  | |  | |         | |       \\   /  |  _  /   | |  | |      \\___ \\" << endl;
+    cout << " / ____ \\ | . \\ | |__| |         | |____    | |   | | \\ \\  _| |_ | |____  ____) |" << endl;
+    cout << "/_/    \\_\\|_|\\_\\ \\____/          |______|   |_|   |_|  \\_\\|_____| \\_____||_____/\033[0m" << endl;
+
+    cout << endl;
+
     cout << endl;
 
     string options[] = {
@@ -412,6 +421,7 @@ void saveLyricsToFiles(Lyric lyrics[], int lyricCount) {
         cin >> saveChoice;
         if (saveChoice != 'y' && saveChoice != 'Y') {
             cout << "Skipping save for: " << lyrics[i].getName() << endl;
+            cin.ignore();
             continue;
         }
 

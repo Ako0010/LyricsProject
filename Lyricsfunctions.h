@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable : 6031)
 const int MAX_LYRICS = 100;
 
 void displayMenu(int highlight) {
@@ -386,5 +387,54 @@ void searchByKeyword(Lyric lyrics[], int lyricCount, string& searchQuery) {
         else if (ch == ' ') {
             searchQuery += ' ';
         }
+    }
+}
+
+void saveLyricsToFiles(Lyric lyrics[], int lyricCount) {
+    for (int i = 0; i < lyricCount; ++i) {
+        char fileName[100];
+        int idx = 0;
+
+        for (size_t j = 0; j < lyrics[i].getName().size(); ++j) {
+            fileName[idx++] = lyrics[i].getName()[j];
+        }
+
+        fileName[idx++] = '.';
+        fileName[idx++] = 't';
+        fileName[idx++] = 'x';
+        fileName[idx++] = 't';
+
+        fileName[idx] = '\0';
+
+        FILE* file = fopen(fileName, "w");
+        if (!file) {
+            cout << "\033[31mError opening file: " << fileName << "!\033[0m" << endl;
+            continue;
+        }
+
+        for (size_t j = 0; j < lyrics[i].getName().size(); ++j) {
+            putc(lyrics[i].getName()[j], file);
+        }
+        putc('\n', file);
+
+        for (size_t j = 0; j < lyrics[i].getAuthor().size(); ++j) {
+            putc(lyrics[i].getAuthor()[j], file);
+        }
+        putc('\n', file);
+
+        string yearStr = to_string(lyrics[i].getYear());
+        for (size_t j = 0; j < yearStr.size(); ++j) {
+            putc(yearStr[j], file);
+        }
+        putc('\n', file);
+
+        for (size_t j = 0; j < lyrics[i].getLyrics().size(); ++j) {
+            putc(lyrics[i].getLyrics()[j], file);
+        }
+        putc('\n', file);
+
+        fclose(file);
+        cout << "\033[32mLyric " << lyrics[i].getName() << " saved to file: " << fileName << "\033[0m" << endl;
+        getch();
     }
 }

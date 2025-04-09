@@ -262,3 +262,15 @@ void displayLyrics(Lyric lyrics[], int lyricCount) {
         return;
     }
 }
+
+bool isValidChar(char ch) {
+    return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
+}
+
+bool toLower(char& ch) {
+    if (ch >= 'A' && ch <= 'Z') {
+        ch += 32;
+        return true;
+    }
+    return false;
+}

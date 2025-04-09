@@ -178,3 +178,68 @@ void addLyricFromFile(Lyric lyrics[], int& lyricCount, const char* fileName) {
     fclose(file);
     cout << "\033[32mLyrics successfully loaded from file!\033[0m" << endl;
 }
+
+void deleteLyric(Lyric lyrics[], int& lyricCount, const string& name) {
+    for (int i = 0; i < lyricCount; ++i) {
+        if (lyrics[i].getName() == name) {
+            for (int j = i; j < lyricCount - 1; ++j) {
+                lyrics[j] = lyrics[j + 1];
+            }
+            lyricCount--;
+            cout << "\033[32mSuccessfully Lyric deleted!\033[0m" << endl;
+            return;
+        }
+    }
+    cout << "\033[31mLyric not found!\033[0m" << endl;
+}
+
+void editLyric(Lyric lyrics[], int lyricCount, const string& name) {
+    for (int i = 0; i < lyricCount; ++i) {
+        if (lyrics[i].getName() == name) {
+            cout << "Editing lyric: " << lyrics[i].getName() << endl;
+
+            string newName, newAuthor, newLyrics, yearStr;
+            int newYear;
+
+            do {
+                cout << "Enter new name: ";
+                getline(cin, newName);
+                if (!isValidNameOrAuthor(newName)) {
+                    cout << "\033[31mInvalid name. Please enter a valid name letters and spaces only.\033[0m" << endl;
+                }
+            } while (!isValidNameOrAuthor(newName));
+
+            do {
+                cout << "Enter new author: ";
+                getline(cin, newAuthor);
+                if (!isValidNameOrAuthor(newAuthor)) {
+                    cout << "\033[31mInvalid Author name. Please enter a valid name letters and spaces only.\033[0m" << endl;
+                }
+            } while (!isValidNameOrAuthor(newAuthor));
+
+            do {
+                cout << "Enter new year: ";
+                getline(cin, yearStr);
+                if (!isValidYear(yearStr)) {
+                    cout << "\033[31mInvalid year. Please enter a valid year only digits.\033[0m" << endl;
+                }
+            } while (!isValidYear(yearStr));
+
+            newYear = stoi(yearStr);
+
+            cout << "Enter new lyrics: ";
+            getline(cin, newLyrics);
+
+            lyrics[i].setName(newName);
+            lyrics[i].setAuthor(newAuthor);
+            lyrics[i].setYear(newYear);
+            lyrics[i].setLyrics(newLyrics);
+
+            cout << "Lyric updated!" << endl;
+            return;
+        }
+    }
+
+    cout << "\033[31mLyric not found!\033[0m" << endl;
+    _getch();
+}

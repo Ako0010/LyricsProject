@@ -274,3 +274,35 @@ bool toLower(char& ch) {
     }
     return false;
 }
+
+bool containsSubstring(const string& str, const string& searchQuery) {
+
+    if (searchQuery.length() > str.length()) {
+        return false;
+    }
+
+    string strLower = str;
+    string queryLower = searchQuery;
+
+    for (int i = 0; i < strLower.length(); ++i) {
+        toLower(strLower[i]);
+    }
+
+    for (int i = 0; i < queryLower.length(); ++i) {
+        toLower(queryLower[i]);
+    }
+
+    for (size_t i = 0; i <= strLower.length() - queryLower.length(); ++i) {
+        bool match = true;
+        for (size_t j = 0; j < queryLower.length(); ++j) {
+            if (strLower[i + j] != queryLower[j]) {
+                match = false;
+                break;
+            }
+        }
+        if (match) {
+            return true;
+        }
+    }
+    return false;
+}

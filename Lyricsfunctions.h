@@ -94,7 +94,7 @@ void addLyric(Lyric lyrics[], int& lyricCount)
             break;
         }
         else {
-            cout << "\033[31mInvalid choice! Please enter a valid number (1 or 2).\033[0m" << endl;
+            cout << "\033[31mInvalid choice! Please enter a valid number (1 or 2 3).\033[0m" << endl;
         }
     }
 

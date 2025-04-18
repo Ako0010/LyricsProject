@@ -2,8 +2,8 @@
 
 class Lyric {
 private:
+    static int nextId;
     int id;
-	static int nextId;
     string name;
     string author;
     int year;
@@ -35,8 +35,13 @@ public:
         cout << lyrics << endl << endl;
     }
 
+
     static int getIdCounter() {
         return nextId;
+    }
+
+    static void setIdCounter(int newId) {
+        nextId = newId;
     }
 
     static int resetIdCounter() {

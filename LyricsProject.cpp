@@ -2,9 +2,13 @@
 #include <string>
 #include <conio.h>
 #include <stdio.h>
+#include <fstream>
+#include <nlohmann/json.hpp>
 using namespace std;
+using json = nlohmann::json;
 #include "Lyricsclass.h"
 #include "Lyricsfunctions.h"
+
 
 int main()
 {
@@ -14,8 +18,6 @@ int main()
     bool running = true;
 
     Lyric::resetIdCounter();
-    lyrics[lyricCount++] = Lyric("Impossible", "James Arthur", 2013, "I remember,years ago Someone told me I should take caution when it comes to love, I did and you were strong and I was not my illiuson my mistake I was careless");
-    lyrics[lyricCount++] = Lyric("Ego", "Willy William", 2016, "Miroir, dis-moi qui est le plus beau Quitte à devenir mégalo  Viens donc chatouiller mon ego Allez, allez, allez! Laisse - moi entrer dans ta matrice Goûter à tes délicesPersonne ne peut m  en dissuader Allez, allez, allez!");
 
 
     while (running) {
@@ -24,10 +26,10 @@ int main()
 
         int ch = _getch();
         if (ch == 72) {
-            highlight = (highlight - 1 + 8) % 8;
+            highlight = (highlight - 1 + 7) % 7;
         }
         else if (ch == 80) {
-            highlight = (highlight + 1) % 8;
+            highlight = (highlight + 1) % 7;
         }
         else if (ch == 13) {
             system("cls||clear");
@@ -41,6 +43,7 @@ int main()
                 string name;
                 cout << "Enter song name to delete: ";
                 getline(cin, name);
+                loadFromJson(lyrics, lyricCount);
                 deleteLyric(lyrics, lyricCount, name);
             }
             break;
@@ -49,16 +52,19 @@ int main()
                 string name;
                 cout << "Enter song name to edit: ";
                 getline(cin, name);
+                loadFromJson(lyrics, lyricCount);
                 editLyric(lyrics, lyricCount, name);
             }
             break;
             case 3:
+                loadFromJson(lyrics, lyricCount);
                 displayLyrics(lyrics, lyricCount);
                 break;
             case 4:
             {
                 string searchQuery;
                 cout << "Enter author to search for: ";
+                loadFromJson(lyrics, lyricCount);
                 searchByAuthor(lyrics, lyricCount,searchQuery);
             }
             break;
@@ -66,16 +72,11 @@ int main()
             {
                 string searchQuery;
                 cout << "Enter keyword to search for: ";
+                loadFromJson(lyrics, lyricCount);
                 searchByKeyword(lyrics, lyricCount, searchQuery);
             }
             break;
             case 6:
-            {
-                char fileName[256];      
-                saveLyricsToFiles(lyrics, lyricCount);
-            }
-            break;
-            case 7:
                 running = false;
                 cout << "\033[38;5;135mSee you again, my friend ;)\033[0m" << endl;
                 break;

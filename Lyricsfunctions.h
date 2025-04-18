@@ -2,6 +2,7 @@
 #pragma warning(disable : 6031)
 #pragma warning(disable : 4996)
 const int MAX_LYRICS = 100;
+#define JSON_FILE "lyrics.json"
 
 void displayMenu(int highlight) {
     system("cls||clear");
@@ -24,11 +25,10 @@ void displayMenu(int highlight) {
         "4. Display all lyrics",
         "5. Search lyrics by author",
         "6. Search lyrics by keyword",
-        "7. Save lyrics to file",
-        "8. Exit"
+        "7. Exit"
     };
 
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 7; ++i) {
         if (i == highlight) {
             cout << options[i] << " <-" << endl;
         }
@@ -67,11 +67,115 @@ bool isValidYear(const string& yearStr) {
     return year >= 1950 && year <= 2025;
 }
 
-void addLyricFromFile(Lyric lyrics[], int& lyricCount, const char* fileName);
 
 bool isValidChoice(const string& choice) {
-    return choice == "1" || choice == "2" || choice == "3";
+    return choice == "1" || choice == "2";
 }
+
+void saveToJson(const Lyric lyrics[], int lyricCount) {
+
+    FILE* file = fopen(JSON_FILE, "r");
+    const char* mode = file ? "r+" : "w";
+    if (file) {
+        fclose(file);
+    }
+
+    json jArray = json::array();
+    for (int i = 0; i < lyricCount; ++i) {
+        json jLyric;
+        jLyric["id"] = lyrics[i].getId();
+        jLyric["name"] = lyrics[i].getName();
+        jLyric["author"] = lyrics[i].getAuthor();
+        jLyric["year"] = lyrics[i].getYear();
+        jLyric["lyrics"] = lyrics[i].getLyrics();
+        jArray.push_back(jLyric);
+    }
+
+    string jsonString = jArray.dump(4);
+
+    file = fopen(JSON_FILE, mode);
+
+    if (file) {
+        for (size_t i = 0; i < jsonString.length(); ++i) {
+            fputc(jsonString[i], file);
+        }
+        fclose(file);
+        cout << "\033[32mLyrics saved to " << JSON_FILE << "!\033[0m" << endl;
+    }
+    else {
+        cout << "\033[31mError: Could not open file for writing!\033[0m" << endl;
+    }
+}
+
+void loadFromJson(Lyric lyrics[], int& lyricCount) {
+    ifstream file(JSON_FILE);
+    if (!file.is_open()) {
+        cout << "\033[31mNo existing data file found. Starting fresh.\033[0m" << endl;
+        lyricCount = 0;
+        return;
+    }
+
+    string fullBuffer;
+    string line;
+    while (getline(file, line)) {
+        fullBuffer += line + "\n";
+    }
+    file.close();
+
+    if (fullBuffer.empty()) {
+        cout << "\033[31mFile is empty. Starting fresh.\033[0m" << endl;
+        lyricCount = 0;
+        return;
+    }
+
+    if (!json::accept(fullBuffer)) {
+        cout << "\033[31mError: Invalid JSON format in file!\033[0m" << endl;
+        lyricCount = 0;
+        return;
+    }
+
+    json jArray = json::parse(fullBuffer);
+    int currentNextId = Lyric::getIdCounter();
+
+    for (const auto& jLyric : jArray) {
+        if (lyricCount >= MAX_LYRICS) {
+            cout << "\033[31mMaximum number of lyrics reached while loading!\033[0m" << endl;
+            break;
+        }
+
+        if (jLyric.contains("id") && jLyric.contains("name") && jLyric.contains("author") &&
+            jLyric.contains("year") && jLyric.contains("lyrics")) {
+
+            bool alreadyExists = false;
+            for (int i = 0; i < lyricCount; ++i) {
+                if (lyrics[i].getId() == jLyric["id"]) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+
+            if (!alreadyExists) {
+                string name = jLyric["name"];
+                string author = jLyric["author"];
+                int year = jLyric["year"];
+                string lyricsText = jLyric["lyrics"];
+
+                lyrics[lyricCount] = Lyric(name, author, year, lyricsText);
+                lyricCount++;
+
+                if (lyrics[lyricCount - 1].getId() >= currentNextId) {
+                    currentNextId = lyrics[lyricCount - 1].getId() + 1;
+                }
+            }
+        }
+        else {
+            cout << "\033[33mWarning: Skipping an entry with missing fields.\033[0m" << endl;
+        }
+    }
+
+    Lyric::setIdCounter(currentNextId);
+}
+
 
 void addLyric(Lyric lyrics[], int& lyricCount) 
 {
@@ -84,9 +188,8 @@ void addLyric(Lyric lyrics[], int& lyricCount)
     while (true) {
         cout << "Choose how to add lyrics:" << endl;
         cout << "1. Manually enter lyrics" << endl;
-        cout << "2. Upload lyrics from a file" << endl;
-        cout << "3. Exit" << endl;
-        cout << "Enter your choice 1, 2, or 3 : ";
+        cout << "2. Exit" << endl;
+        cout << "Enter your choice 1,or 2 : ";
 
         getline(cin, choice);
 
@@ -132,18 +235,10 @@ void addLyric(Lyric lyrics[], int& lyricCount)
         getline(cin, lyricsContent);
 
         lyrics[lyricCount++] = Lyric(name, author, year, lyricsContent);
+        saveToJson(lyrics, lyricCount);
         cout << "Lyric added!" << endl;
     }
-    else if (choice == "2") {
-        char fileName[256];
-        cout << "Enter file name to upload lyrics from: ";
-        cin.getline(fileName, 256);
-        for (int i = strlen(fileName) - 1; i >= 0 && fileName[i] == ' '; i--) {
-            fileName[i] = '\0';
-        }
-        addLyricFromFile(lyrics, lyricCount, fileName);
-    }
-	else if (choice == "3") {
+	else if (choice == "2") {
 		return;
 	}
     else {
@@ -152,47 +247,6 @@ void addLyric(Lyric lyrics[], int& lyricCount)
     }
 }
 
-void addLyricFromFile(Lyric lyrics[], int& lyricCount, const char* fileName) {
-    FILE* file = fopen(fileName, "r");
-    if (!file) {
-        cout << "\033[31mError opening file: " << fileName << "!\033[0m" << endl;
-        _getch();
-        return;
-    }
-
-    char buffer[1024];
-    string name, author, lyricsContent;
-    int year = 0;
-
-    while (fgets(buffer, sizeof(buffer), file)) {
-        name = buffer;
-        name = name.substr(0, name.find('\n'));
-
-        if (fgets(buffer, sizeof(buffer), file)) {
-            author = buffer;
-            author = author.substr(0, author.find('\n'));
-        }
-
-        if (fgets(buffer, sizeof(buffer), file)) {
-            year = stoi(buffer);
-        }
-
-        lyricsContent.clear();
-        while (fgets(buffer, sizeof(buffer), file) && buffer[0] != '\n') {
-            lyricsContent += buffer;
-        }
-
-        if (lyricCount < MAX_LYRICS) {
-            lyrics[lyricCount] = Lyric(name, author, year, lyricsContent);
-            lyricCount++;
-        }
-
-        fgets(buffer, sizeof(buffer), file);
-    }
-
-    fclose(file);
-    cout << "\033[32mLyrics successfully loaded from file!\033[0m" << endl;
-}
 
 void deleteLyric(Lyric lyrics[], int& lyricCount, const string& name) {
     for (int i = 0; i < lyricCount; ++i) {
@@ -201,6 +255,7 @@ void deleteLyric(Lyric lyrics[], int& lyricCount, const string& name) {
                 lyrics[j] = lyrics[j + 1];
             }
             lyricCount--;
+            saveToJson(lyrics, lyricCount);
             cout << "\033[32mSuccessfully Lyric deleted!\033[0m" << endl;
             return;
         }
@@ -250,6 +305,7 @@ void editLyric(Lyric lyrics[], int lyricCount, const string& name) {
             lyrics[i].setYear(newYear);
             lyrics[i].setLyrics(newLyrics);
 
+            saveToJson(lyrics, lyricCount);
             cout << "Lyric updated!" << endl;
             return;
         }
@@ -258,6 +314,7 @@ void editLyric(Lyric lyrics[], int lyricCount, const string& name) {
     cout << "\033[31mLyric not found!\033[0m" << endl;
     _getch();
 }
+
 
 void displayLyrics(Lyric lyrics[], int lyricCount) {
     if (lyricCount == 0) {
@@ -277,6 +334,8 @@ void displayLyrics(Lyric lyrics[], int lyricCount) {
         return;
     }
 }
+
+
 
 bool isValidChar(char ch) {
     return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
@@ -404,60 +463,4 @@ void searchByKeyword(Lyric lyrics[], int lyricCount, string& searchQuery) {
     }
 }
 
-void saveLyricsToFiles(Lyric lyrics[], int lyricCount) {
-    for (int i = 0; i < lyricCount; ++i) {
-        char fileName[100];
-        int idx = 0;
 
-        for (size_t j = 0; j < lyrics[i].getName().size(); ++j) {
-            fileName[idx++] = lyrics[i].getName()[j];
-        }
-
-        fileName[idx++] = '.';
-        fileName[idx++] = 't';
-        fileName[idx++] = 'x';
-        fileName[idx++] = 't';
-
-        fileName[idx] = '\0';
-
-        cout << "\033[33mDo you want to save the lyrics of '" << lyrics[i].getName() << "' to a file? (y/n): \033[0m";
-        char saveChoice;
-        cin >> saveChoice;
-        if (saveChoice != 'y' && saveChoice != 'Y') {
-            cout << "Skipping save for: " << lyrics[i].getName() << endl;
-            cin.ignore();
-            continue;
-        }
-
-        FILE* file = fopen(fileName, "w");
-        if (!file) {
-            cout << "\033[31mError opening file: " << fileName << "!\033[0m" << endl;
-            continue;
-        }
-
-        for (size_t j = 0; j < lyrics[i].getName().size(); ++j) {
-            putc(lyrics[i].getName()[j], file);
-        }
-        putc('\n', file);
-
-        for (size_t j = 0; j < lyrics[i].getAuthor().size(); ++j) {
-            putc(lyrics[i].getAuthor()[j], file);
-        }
-        putc('\n', file);
-
-        string yearStr = to_string(lyrics[i].getYear());
-        for (size_t j = 0; j < yearStr.size(); ++j) {
-            putc(yearStr[j], file);
-        }
-        putc('\n', file);
-
-        for (size_t j = 0; j < lyrics[i].getLyrics().size(); ++j) {
-            putc(lyrics[i].getLyrics()[j], file);
-        }
-        putc('\n', file);
-
-        fclose(file);
-        cout << "\033[32mLyric " << lyrics[i].getName() << " saved to file: " << fileName << "\033[0m" << endl;
-        _getch();
-    }
-}

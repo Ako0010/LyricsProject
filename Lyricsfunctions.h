@@ -25,10 +25,11 @@ void displayMenu(int highlight) {
         "4. Display all lyrics",
         "5. Search lyrics by author",
         "6. Search lyrics by keyword",
-        "7. Exit"
+        "7. Referral Code",
+        "8. Exit"
     };
 
-    for (int i = 0; i < 7; ++i) {
+    for (int i = 0; i < 8; ++i) {
         if (i == highlight) {
             cout << options[i] << " <-" << endl;
         }
@@ -74,10 +75,16 @@ bool isValidChoice(const string& choice) {
 
 void saveToJson(const Lyric lyrics[], int lyricCount) {
 
-    FILE* file = fopen(JSON_FILE, "r");
-    const char* mode = file ? "r+" : "w";
-    if (file) {
-        fclose(file);
+    if (lyricCount == 0) {
+        cout << "\033[33mNo lyrics to save (array is empty).\033[0m" << endl;
+        return;
+    }
+
+
+    FILE* file = fopen(JSON_FILE, "w");
+    if (!file) {
+        cout << "\033[31mError: Could not open file for writing!\033[0m" << endl;
+        return;
     }
 
     json jArray = json::array();
@@ -91,21 +98,21 @@ void saveToJson(const Lyric lyrics[], int lyricCount) {
         jArray.push_back(jLyric);
     }
 
+
     string jsonString = jArray.dump(4);
 
-    file = fopen(JSON_FILE, mode);
 
-    if (file) {
-        for (size_t i = 0; i < jsonString.length(); ++i) {
-            fputc(jsonString[i], file);
-        }
-        fclose(file);
-        cout << "\033[32mLyrics saved to " << JSON_FILE << "!\033[0m" << endl;
+    for (size_t i = 0; i < jsonString.length(); ++i) {
+        fputc(jsonString[i], file);
     }
-    else {
-        cout << "\033[31mError: Could not open file for writing!\033[0m" << endl;
-    }
+
+
+    fclose(file);
+
+
+    cout << "\033[32mLyrics saved to " << JSON_FILE << "!\033[0m" << endl;
 }
+
 
 void loadFromJson(Lyric lyrics[], int& lyricCount) {
     ifstream file(JSON_FILE);
@@ -255,6 +262,7 @@ void deleteLyric(Lyric lyrics[], int& lyricCount, const string& name) {
                 lyrics[j] = lyrics[j + 1];
             }
             lyricCount--;
+
             saveToJson(lyrics, lyricCount);
             cout << "\033[32mSuccessfully Lyric deleted!\033[0m" << endl;
             return;
@@ -323,9 +331,22 @@ void displayLyrics(Lyric lyrics[], int lyricCount) {
         return;
     }
 
+    srand(static_cast<unsigned int>(time(0)));
+
+    int displayCount = lyricCount < 3 ? lyricCount : 3;
+
     cout << "Displaying all lyrics:" << endl;
-    for (int i = 0; i < lyricCount; ++i) {
-        lyrics[i].display();
+
+    bool used[100] = { false };
+
+    int count = 0;
+    while (count < displayCount) {
+        int randIndex = rand() % lyricCount;
+        if (!used[randIndex]) {
+            lyrics[randIndex].display();
+            used[randIndex] = true;
+            count++;
+        }
     }
 
     cout << "Press Enter to return to the menu..." << endl;

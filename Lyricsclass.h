@@ -23,11 +23,10 @@ public:
 
     void setName(string namee) { name = namee; }
     void setAuthor(string authorr) { author = authorr; }
-    void setYear(int yearr) { yearr = yearr; }
+    void setYear(int yearr) { year = yearr; }
     void setLyrics(string lyricss) { lyrics = lyricss; }
 
-    void display() const {
-        cout << "ID: " << id << endl;
+     void display() const {
         cout << "Song Name: " << name << endl;
         cout << "Author: " << author << endl;
         cout << "Year: " << year << endl;

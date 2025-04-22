@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClInclude Include="Lyricsclass.h" />
     <ClInclude Include="Lyricsfunctions.h" />
+    <ClInclude Include="Lyricsreferralcode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

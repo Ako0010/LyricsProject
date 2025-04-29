@@ -3,17 +3,19 @@
 #include <conio.h>
 #include <stdio.h>
 #include <fstream>
+#include <vector>
 #include <nlohmann/json.hpp>
 using namespace std;
 using json = nlohmann::json;
 #include "Lyricsclass.h"
 #include "Lyricsfunctions.h"
 #include "Lyricsreferralcode.h"
+using namespace LyricsProject;
 
 
 int main()
 {
-    Lyric lyrics[MAX_LYRICS];
+    vector<Lyric> lyrics;
     int lyricCount = 0;
     int highlight = 0;
     bool running = true;
@@ -39,7 +41,7 @@ int main()
             system("cls||clear");
             switch (highlight) {
             case 0:
-                addLyric(lyrics, lyricCount);
+                addLyric(lyrics);
                 system("cls||clear");
                 break;
             case 1:
@@ -47,8 +49,8 @@ int main()
                 string name;
                 cout << "Enter song name to delete: ";
                 getline(cin, name);
-                loadFromJson(lyrics, lyricCount);
-                deleteLyric(lyrics, lyricCount, name);
+                loadFromJson(lyrics);
+                deleteLyric(lyrics, name);
             }
             break;
             case 2:
@@ -56,28 +58,28 @@ int main()
                 string name;
                 cout << "Enter song name to edit: ";
                 getline(cin, name);
-                loadFromJson(lyrics, lyricCount);
-                editLyric(lyrics, lyricCount, name);
+                loadFromJson(lyrics);
+                editLyric(lyrics, name);
             }
             break;
             case 3:
-                loadFromJson(lyrics, lyricCount);
-                displayLyrics(lyrics, lyricCount);
+                loadFromJson(lyrics);
+                displayLyrics(lyrics);
                 break;
             case 4:
             {
                 string searchQuery;
                 cout << "Enter author to search for: ";
-                loadFromJson(lyrics, lyricCount);
-                searchByAuthor(lyrics, lyricCount,searchQuery);
+                loadFromJson(lyrics);
+                searchByAuthor(lyrics,searchQuery);
             }
             break;
             case 5:
             {
                 string searchQuery;
                 cout << "Enter keyword to search for: ";
-                loadFromJson(lyrics, lyricCount);
-                searchByKeyword(lyrics, lyricCount, searchQuery);
+                loadFromJson(lyrics);
+                searchByKeyword(lyrics, searchQuery);
             }
             break;
             case 6: {

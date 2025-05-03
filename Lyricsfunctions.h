@@ -84,7 +84,7 @@ namespace LyricsProject {
         }
 
         try {
-            FILE* file = fopen(JSON_FILE, "w");
+            FILE* file = fopen(JSON_FILE, "w+");
             if (!file) {
                 throw runtime_error("Error: Could not open file for writing!");
             }
